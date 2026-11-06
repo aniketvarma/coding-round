@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import {envSchema} from './platform/config/env.schema.js';
+import { envSchema } from './platform/config/env.schema.js';
 import { APP_PIPE } from '@nestjs/core';
 import { StandardSchemaValidationPipe } from '@nestjs/common';
-
+import { DatabaseModule } from './platform/database/database.module.js';
 
 @Module({
   imports: [
@@ -13,9 +13,9 @@ import { StandardSchemaValidationPipe } from '@nestjs/common';
       ignoreEnvFile: process.env.NODE_ENV === 'test',
       validationSchema: envSchema,
     }),
+    DatabaseModule,
   ],
   controllers: [],
   providers: [{ provide: APP_PIPE, useClass: StandardSchemaValidationPipe }],
 })
 export class AppModule {}
-

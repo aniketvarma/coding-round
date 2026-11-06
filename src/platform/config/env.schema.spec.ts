@@ -1,10 +1,14 @@
 import { envSchema } from './env.schema.js';
 
-const validEnv = { DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/mock_interview' };
+const validEnv = {
+  DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/mock_interview',
+};
 
 function failingPaths(input: Record<string, string>): string[] {
   const result = envSchema.safeParse(input);
-  return result.success ? [] : result.error.issues.map((issue) => issue.path.join('.'));
+  return result.success
+    ? []
+    : result.error.issues.map((issue) => issue.path.join('.'));
 }
 
 describe('envSchema', () => {
@@ -14,7 +18,9 @@ describe('envSchema', () => {
     });
 
     it('a DATABASE_URL that is not a Postgres URL', () => {
-      expect(failingPaths({ DATABASE_URL: 'mysql://root@localhost:3306/app' })).toContain('DATABASE_URL');
+      expect(
+        failingPaths({ DATABASE_URL: 'mysql://root@localhost:3306/app' }),
+      ).toContain('DATABASE_URL');
     });
 
     it('a PORT outside 1-65535', () => {
@@ -40,7 +46,10 @@ describe('envSchema', () => {
       });
 
       expect(env.PORT).toBe(8080);
-      expect(env.CORS_ORIGINS).toEqual(['http://localhost:5173', 'https://app.example.com']);
+      expect(env.CORS_ORIGINS).toEqual([
+        'http://localhost:5173',
+        'https://app.example.com',
+      ]);
     });
   });
 });
