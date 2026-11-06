@@ -8,7 +8,8 @@ CREATE TABLE problems (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     slug TEXT NOT NULL UNIQUE 
        CONSTRAINT problems_slug_format CHECK (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$' AND char_length(slug) <= 100),
-
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
     difficulty difficulty NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
