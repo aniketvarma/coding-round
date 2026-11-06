@@ -4,6 +4,7 @@ import { envSchema } from './platform/config/env.schema.js';
 import { APP_PIPE } from '@nestjs/core';
 import { StandardSchemaValidationPipe } from '@nestjs/common';
 import { DatabaseModule } from './platform/database/database.module.js';
+import { HealthModule } from './platform/health/health.module.js';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DatabaseModule } from './platform/database/database.module.js';
       validationSchema: envSchema,
     }),
     DatabaseModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [{ provide: APP_PIPE, useClass: StandardSchemaValidationPipe }],
