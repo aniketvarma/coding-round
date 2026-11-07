@@ -17,7 +17,7 @@ export class DatabaseHealthIndicator {
   async isHealthy(key: string): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check(key);
     try {
-      await this.sql`select 1`;
+      await this.sql<{ isHealthy: number }[]>`select 1 AS "isHealthy"`;
       return indicator.up();
     } catch (error) {
       this.logger.error(
