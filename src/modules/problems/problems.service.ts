@@ -14,7 +14,7 @@ export class ProblemsService {
         const problem = await this.problemsRepository.findPublicBySlug(slug);
         
         if(!problem){
-            throw new NotFoundException(`Problem with slug ${slug} not found`);
+            throw new NotFoundException(`Problem '${slug}' was not found`);
         }
 
         return problem;

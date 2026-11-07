@@ -5,7 +5,7 @@ import { APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
 import { StandardSchemaValidationPipe,StandardSchemaSerializerInterceptor  } from '@nestjs/common';
 import { DatabaseModule } from './platform/database/database.module.js';
 import { HealthModule } from './platform/health/health.module.js';
-import { ProblemsModule } from './modules/problems/problems.module.js';
+import { ProblemsModule } from './modules/problems/index.js';
 
 @Module({
   imports: [
@@ -18,6 +18,7 @@ import { ProblemsModule } from './modules/problems/problems.module.js';
     DatabaseModule,
     HealthModule,
     ProblemsModule,
+
   ],
   controllers: [],
   
