@@ -9,7 +9,13 @@ export class ProblemsRepository {
   // Selects public columns only, so reference_solution never leaves the database on this path.
   async findPublicBySlug(slug: string): Promise<ProblemDetail | undefined> {
     const [problem] = await this.sql<
-      { id: number; slug: string; title: string; difficulty: 'easy' | 'medium' | 'hard'; description: string }[]
+      {
+        id: number;
+        slug: string;
+        title: string;
+        difficulty: 'easy' | 'medium' | 'hard';
+        description: string;
+      }[]
     >`
       SELECT id, slug, title, difficulty, description
       FROM problems
@@ -19,7 +25,9 @@ export class ProblemsRepository {
       return undefined;
     }
 
-    const languages = await this.sql<{ language: 'javascript' | 'python'; starterCode: string }[]>`
+    const languages = await this.sql<
+      { language: 'javascript' | 'python'; starterCode: string }[]
+    >`
       SELECT language, starter_code AS "starterCode"
       FROM problem_languages
       WHERE problem_id = ${problem.id}

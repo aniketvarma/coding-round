@@ -5,14 +5,21 @@ export type ProblemFixture = {
   title: string;
   difficulty: 'easy' | 'medium' | 'hard';
   description: string;
-  languages: { language: 'javascript' | 'python'; starterCode: string; referenceSolution: string }[];
+  languages: {
+    language: 'javascript' | 'python';
+    starterCode: string;
+    referenceSolution: string;
+  }[];
 };
 
 export async function truncateProblems(sql: Database): Promise<void> {
   await sql`TRUNCATE problems, problem_languages`;
 }
 
-export async function insertProblem(sql: Database, problem: ProblemFixture): Promise<void> {
+export async function insertProblem(
+  sql: Database,
+  problem: ProblemFixture,
+): Promise<void> {
   const [{ id }] = await sql<{ id: number }[]>`
     INSERT INTO problems (slug, title, difficulty, description)
     VALUES (${problem.slug}, ${problem.title}, ${problem.difficulty}, ${problem.description})

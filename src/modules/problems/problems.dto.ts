@@ -1,9 +1,12 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 export const problemsSlugSchema = z
-     .string()
-     .max(100,'Must be at most 100 characters.')
-     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Use lowercase letters, digits, and single hyphens.');
+  .string()
+  .max(100, 'Must be at most 100 characters.')
+  .regex(
+    /^[a-z0-9]+(-[a-z0-9]+)*$/,
+    'Use lowercase letters, digits, and single hyphens.',
+  );
 
 // Must list the same values as the difficulty and language enums in the create_problems migration.
 const difficultySchema = z.enum(['easy', 'medium', 'hard']);

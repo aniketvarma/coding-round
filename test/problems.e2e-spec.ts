@@ -2,7 +2,11 @@ import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { DATABASE, type Database } from '../src/platform/database/database.js';
 import { createTestApp } from './app.js';
-import { insertProblem, type ProblemFixture, truncateProblems } from './fixtures.js';
+import {
+  insertProblem,
+  type ProblemFixture,
+  truncateProblems,
+} from './fixtures.js';
 
 // Python is stored first, so JavaScript can only come first in the response because of the query's ORDER BY.
 const twoSum: ProblemFixture = {
@@ -11,8 +15,16 @@ const twoSum: ProblemFixture = {
   difficulty: 'easy',
   description: 'Find two numbers that add up to the target.',
   languages: [
-    { language: 'python', starterCode: 'def two_sum(): pass', referenceSolution: 'SECRET-PY' },
-    { language: 'javascript', starterCode: 'function twoSum() {}', referenceSolution: 'SECRET-JS' },
+    {
+      language: 'python',
+      starterCode: 'def two_sum(): pass',
+      referenceSolution: 'SECRET-PY',
+    },
+    {
+      language: 'javascript',
+      starterCode: 'function twoSum() {}',
+      referenceSolution: 'SECRET-JS',
+    },
   ],
 };
 
@@ -22,7 +34,13 @@ const validParentheses: ProblemFixture = {
   title: 'Valid Parentheses',
   difficulty: 'medium',
   description: 'Check that every bracket is closed.',
-  languages: [{ language: 'python', starterCode: 'def is_valid(): pass', referenceSolution: 'SECRET-VP' }],
+  languages: [
+    {
+      language: 'python',
+      starterCode: 'def is_valid(): pass',
+      referenceSolution: 'SECRET-VP',
+    },
+  ],
 };
 
 describe('GET /problems/:slug', () => {
@@ -46,7 +64,9 @@ describe('GET /problems/:slug', () => {
     await insertProblem(sql, twoSum);
     await insertProblem(sql, validParentheses);
 
-    const response = await request(app.getHttpServer()).get('/problems/two-sum');
+    const response = await request(app.getHttpServer()).get(
+      '/problems/two-sum',
+    );
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -67,13 +87,17 @@ describe('GET /problems/:slug', () => {
   it('returns 404 for a slug that is not in the database', async () => {
     await insertProblem(sql, validParentheses);
 
-    const response = await request(app.getHttpServer()).get('/problems/two-sum');
+    const response = await request(app.getHttpServer()).get(
+      '/problems/two-sum',
+    );
 
     expect(response.status).toBe(404);
   });
 
   it('returns 400 for a malformed slug', async () => {
-    const response = await request(app.getHttpServer()).get('/problems/Two-Sum');
+    const response = await request(app.getHttpServer()).get(
+      '/problems/Two-Sum',
+    );
 
     expect(response.status).toBe(400);
   });

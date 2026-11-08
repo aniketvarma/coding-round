@@ -1,5 +1,9 @@
 import { Controller, Get, Param, SerializeOptions } from '@nestjs/common';
-import { type ProblemResponse, problemResponseSchema, problemsSlugSchema } from './problems.dto.js';
+import {
+  type ProblemResponse,
+  problemResponseSchema,
+  problemsSlugSchema,
+} from './problems.dto.js';
 import { ProblemsService } from './problems.service.js';
 
 @Controller('problems')
@@ -8,7 +12,9 @@ export class ProblemsController {
 
   @Get(':slug')
   @SerializeOptions({ schema: problemResponseSchema })
-  async getBySlug(@Param('slug', { schema: problemsSlugSchema }) slug: string): Promise<ProblemResponse> {
+  async getBySlug(
+    @Param('slug', { schema: problemsSlugSchema }) slug: string,
+  ): Promise<ProblemResponse> {
     return { data: await this.problemsService.getBySlug(slug) };
   }
 }
