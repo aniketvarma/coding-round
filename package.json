@@ -37,6 +37,7 @@
     "@nestjs/cli": "^12.0.0",
     "@nestjs/schematics": "^12.0.0",
     "@nestjs/testing": "^12.0.1",
+    "@testcontainers/postgresql": "^12.2.1",
     "@ts-safeql/eslint-plugin": "^5.4.2",
     "@types/express": "^5.0.0",
     "@types/node": "^24.0.0",
