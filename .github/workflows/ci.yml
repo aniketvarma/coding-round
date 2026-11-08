@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # SafeQL and dbmate read this. The e2e tests replace it with their own container's URL.
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/mock_interview?sslmode=disable
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # SafeQL checks every query against a real schema, so lint needs a migrated database.
+      - run: docker compose up --wait db
+      - run: npm run db:migrate
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run test:e2e
+      - run: npm run build
