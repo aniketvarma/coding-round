@@ -1,6 +1,7 @@
 import type { INestApplication } from '@nestjs/common';
 import { Test, type TestingModuleBuilder } from '@nestjs/testing';
 import { AppModule } from '../src/app.module.js';
+import { configureApp } from '../src/app.setup.js';
 
 // Lets a test swap one provider, such as the database, while keeping the rest of the production wiring.
 export async function createTestApp(
@@ -12,6 +13,7 @@ export async function createTestApp(
     Test.createTestingModule({ imports: [AppModule] }),
   ).compile();
   const app = moduleRef.createNestApplication();
+  configureApp(app);
   await app.init();
   return app;
 }

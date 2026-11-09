@@ -5,7 +5,9 @@ import {
   HealthCheckService,
 } from '@nestjs/terminus';
 import { DatabaseHealthIndicator } from './database.health.js';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller('health')
 export class HealthController {
   constructor(
