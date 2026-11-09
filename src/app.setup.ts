@@ -8,7 +8,7 @@ import type { Env } from './platform/config/env.schema.js';
 export function configureApp(app: INestApplication): void {
   const config: ConfigService<Env, true> = app.get(ConfigService);
   const isProduction = config.get('NODE_ENV', { infer: true }) === 'production';
-  
+
   app.use(
     helmet({
       // Safari applies upgrade-insecure-requests even to http://localhost, which breaks /docs in development.
