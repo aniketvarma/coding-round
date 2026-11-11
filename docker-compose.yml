@@ -16,5 +16,28 @@ services:
       timeout: 3s
       retries: 15
 
+    # The production image. Starts only with: docker compose --profile app up
+  app:
+    profiles: ['app']
+    build: .
+    environment:
+      PORT: '3000'
+      DATABASE_URL: postgres://postgres:postgres@db:5432/mock_interview
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+
 volumes:
   pgdata:
