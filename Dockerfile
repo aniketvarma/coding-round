@@ -14,6 +14,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
+COPY src/modules/problems/migrations ./src/modules/problems/migrations
 USER node
 EXPOSE 3000
 CMD ["node", "dist/main.js"]
