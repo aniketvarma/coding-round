@@ -26,3 +26,10 @@ jobs:
       - run: npm test
       - run: npm run test:e2e
       - run: npm run build
+      
+        # The only check that starts the real production image.
+      - run: docker compose --profile app up --build --wait
+      - run: curl --fail --silent --show-error http://localhost:3000/health
+      - if: failure()
+        run: docker compose --profile app logs app
+
