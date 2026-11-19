@@ -26,10 +26,59 @@ jobs:
       - run: npm test
       - run: npm run test:e2e
       - run: npm run build
-      
-        # The only check that starts the real production image.
+
+      # The only check that starts the real production image.
       - run: docker compose --profile app up --build --wait
       - run: curl --fail --silent --show-error http://localhost:3000/health
       - if: failure()
         run: docker compose --profile app logs app
+
+  deploy:
+    # Only after every check passed, and only for commits that reached main.
+    needs: checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Builds natively for the service's ARM64 tasks.
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    # Two merges in a row deploy one after the other, never at the same time.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      AWS_REGION: ap-southeast-2
+      IMAGE: 236843345425.dkr.ecr.ap-southeast-2.amazonaws.com/ai-mock-interview
+      SERVICE_ARN: arn:aws:ecs:ap-southeast-2:236843345425:service/default/ai-mock-interview
+      DB_SECRET_ARN: arn:aws:secretsmanager:ap-southeast-2:236843345425:secret:ai-mock-interview/database-url-hXrcMU
+    steps:
+      - uses: actions/checkout@v7
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push the image
+        run: |
+          TAG=${GITHUB_SHA::7}
+          docker build -t "$IMAGE:$TAG" .
+          docker push "$IMAGE:$TAG"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+
+      # Sends the full configuration every time, so a deploy can never drop the port, secret or architecture.
+      - name: Point the service at the new image
+        run: |
+          CONTAINER=$(jq -nc --arg image "$IMAGE:$TAG" --arg secret "$DB_SECRET_ARN" \
+            '{image: $image, containerPort: 3000, secrets: [{name: "DATABASE_URL", valueFrom: $secret}]}')
+          aws ecs update-express-gateway-service \
+            --service-arn "$SERVICE_ARN" \
+            --primary-container "$CONTAINER" \
+            --execution-role-arn arn:aws:iam::236843345425:role/ecs-task-execution-role \
+            --health-check-path /health \
+            --cpu 256 --memory 512 --cpu-architecture ARM64 \
+            --scaling-target minTaskCount=1,maxTaskCount=1,autoScalingMetric=AVERAGE_CPU,autoScalingTargetValue=60 \
+            --network-configuration 'subnets=subnet-059a2a461c94b5fff,subnet-0c095836803cfbb69,subnet-081117ac78b883747,securityGroups=sg-08650169915b4affb'
+
+      - name: Wait until the new version is live
+        run: aws ecs wait services-stable --cluster default --services ai-mock-interview
 
