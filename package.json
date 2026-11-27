@@ -20,7 +20,7 @@
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "typecheck": "tsc --noEmit",
-    "db:migrate": "dbmate --no-dump-schema -d src/modules/problems/migrations up",
+    "db:migrate": "dbmate --no-dump-schema -d src/modules/problems/migrations -d src/modules/submissions/migrations up",
     "db:seed": "tsx --env-file-if-exists=.env src/modules/problems/problems.seed.ts"
   },
   "dependencies": {

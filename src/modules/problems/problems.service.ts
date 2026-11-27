@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { ProblemDetail } from './problems.dto.js';
+import type { Language, ProblemDetail } from './problems.dto.js';
 import { ProblemsRepository } from './problems.repository.js';
 
 @Injectable()
@@ -14,5 +14,12 @@ export class ProblemsService {
     }
 
     return problem;
+  }
+
+  async findIdBySlugAndLanguage(
+    slug: string,
+    language: Language,
+  ): Promise<number | undefined> {
+    return this.problemsRepository.findIdBySlugAndLanguage(slug, language);
   }
 }

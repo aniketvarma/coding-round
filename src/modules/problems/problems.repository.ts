@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATABASE, type Database } from '../../platform/database/database.js';
-import type { ProblemDetail } from './problems.dto.js';
-
+import type { Language, ProblemDetail } from './problems.dto.js';
 @Injectable()
 export class ProblemsRepository {
   constructor(@Inject(DATABASE) private readonly sql: Database) {}
@@ -41,5 +40,18 @@ export class ProblemsRepository {
       description: problem.description,
       languages,
     };
+  }
+
+  async findIdBySlugAndLanguage(
+    slug: string,
+    language: Language,
+  ): Promise<number | undefined> {
+    const [problem] = await this.sql<{ id: number }[]>`
+    SELECT problems.id
+    FROM problems
+    JOIN problem_languages ON problem_languages.problem_id = problems.id
+    WHERE problems.slug = ${slug} AND problem_languages.language = ${language}
+    `;
+    return problem?.id;
   }
 }
