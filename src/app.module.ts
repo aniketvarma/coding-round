@@ -9,7 +9,7 @@ import {
 import { DatabaseModule } from './platform/database/database.module.js';
 import { HealthModule } from './platform/health/health.module.js';
 import { ProblemsModule } from './modules/problems/index.js';
-
+import { SubmissionsModule } from './modules/submissions/index.js';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +21,7 @@ import { ProblemsModule } from './modules/problems/index.js';
     DatabaseModule,
     HealthModule,
     ProblemsModule,
+    SubmissionsModule,
   ],
   controllers: [],
 
