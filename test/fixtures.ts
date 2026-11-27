@@ -13,7 +13,9 @@ export type ProblemFixture = {
 };
 
 export async function truncateProblems(sql: Database): Promise<void> {
-  await sql`TRUNCATE problems, problem_languages`;
+  // Postgres refuses to truncate a table another table references, even an empty one,
+  // so CASCADE also empties those tables (submissions now, test_cases later).
+  await sql`TRUNCATE problems, problem_languages CASCADE`;
 }
 
 export async function insertProblem(
