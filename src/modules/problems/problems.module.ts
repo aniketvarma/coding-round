@@ -6,5 +6,6 @@ import { ProblemsService } from './problems.service.js';
 @Module({
   controllers: [ProblemsController],
   providers: [ProblemsService, ProblemsRepository],
+  exports: [ProblemsService],
 })
 export class ProblemsModule {}

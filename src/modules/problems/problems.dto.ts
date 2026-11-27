@@ -10,8 +10,7 @@ export const problemsSlugSchema = z
 
 // Must list the same values as the difficulty and language enums in the create_problems migration.
 const difficultySchema = z.enum(['easy', 'medium', 'hard']);
-const languageSchema = z.enum(['javascript', 'python']);
-
+export const languageSchema = z.enum(['javascript', 'python']);
 export const problemDetailSchema = z.object({
   slug: z.string(),
   title: z.string(),
